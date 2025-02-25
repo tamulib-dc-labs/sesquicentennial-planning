@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://tamulib-dc-labs.github.io/sesquicentennial-planning
+
+# Sitemaps
+Sitemap: https://tamulib-dc-labs.github.io/sesquicentennial-planning/sitemap.xml
