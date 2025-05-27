@@ -1,9 +1,9 @@
 {
-  "collection": "https://markpbaggett.github.io/static_iiif/collections/sesquicentennial.json",
-  "devCollection": "https://markpbaggett.github.io/static_iiif/collections/sesquicentennial.json",
+  "collection": "https://markpbaggett.github.io/static_iiif/collections/sesq-new.json",
+  "devCollection": "https://markpbaggett.github.io/static_iiif/collections/sesq-new.json",
   "featured": [
-    "https://markpbaggett.github.io/static_iiif/manifests/sesquicentennial/2884840973_2b6f8af4fd_o.json",
-    "https://markpbaggett.github.io/static_iiif/manifests/sesquicentennial/2899301462_0f424ddccc_o.json"
+    "https://markpbaggett.github.io/static_iiif/manifests/sesq-new/2884840973_2b6f8af4fd_o.json",
+    "https://markpbaggett.github.io/static_iiif/manifests/sesq-new/2899301462_0f424ddccc_o.json"
   ],
   "metadata": ["Date", "Building Name", "Coordinates"],
   "theme": {
