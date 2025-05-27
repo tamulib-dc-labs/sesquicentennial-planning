@@ -1,8 +1,8 @@
 import CanopyMDXRemote from "@src/components/MDX";
 import { FrontMatterPageProps } from "@customTypes/content";
-import LayoutsBasicSidebar from "@src/components/Layouts/BasicSidebar";
 import { buildContentSEO } from "@src/lib/seo";
 import { getMarkdownContent } from "@lib/contentHelpers";
+import FullScreen from "@components/Layouts/FullScreen.tsx";
 
 /**
  * Specifies the relative path of the directory containing the Markdown.
@@ -16,9 +16,9 @@ const CONTENT_DIRECTORY = "timeline";
  */
 const ContentPage = ({ source, frontMatter }: FrontMatterPageProps) => {
   return (
-    <LayoutsBasicSidebar frontMatter={frontMatter}>
+    <FullScreen frontMatter={frontMatter}>
       <CanopyMDXRemote source={source} />
-    </LayoutsBasicSidebar>
+    </FullScreen>
   );
 };
 
