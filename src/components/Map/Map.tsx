@@ -321,7 +321,7 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
             />
           </LayersControl.BaseLayer>
         </LayersControl>
-        <MarkerClusterGroup>
+        <MarkerClusterGroup key={`cluster-${filteredManifests.length}-${selectedDateRange[0]}-${selectedDateRange[1]}`}>
           <FeatureGroup>
             {filteredManifests.map((item: any) =>
               item.features.map((feature: any, index: any) => (
@@ -331,7 +331,7 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                     feature.geometry.coordinates[0],
                   ]}
                   icon={MarkerIcon(item.thumbnail[0].id, getLabel(feature?.properties?.label))}
-                  key={index}
+                  key={`${item.id}-${index}-${selectedDateRange[0]}-${selectedDateRange[1]}`}
                 >
                   <Popup className="canopy-map-popup">
                     <MDXCard iiifContent={item.id} label={getLabel(feature?.properties?.label) as string | undefined} />
