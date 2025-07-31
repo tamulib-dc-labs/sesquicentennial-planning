@@ -20,6 +20,7 @@ export const getFeatures = (manifests: [Manifest]) => {
       id: manifest.id,
       thumbnail: manifest.thumbnail,
       label: manifest.label,
+      navDate: manifest.navDate,
       slug: `works/${manifest.slug}`,
       features: manifest.navPlace.features.filter(
         (feature: any) => feature.geometry.type === "Point"
