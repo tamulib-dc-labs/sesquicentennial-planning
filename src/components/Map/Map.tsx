@@ -291,20 +291,17 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                   {filteredManifests.length} of {manifests.length} items
                 </Text>
               </Flex>
-              <Slider
-                value={selectedDateRange}
-                onValueChange={handleDateRangeChange}
-                min={minYear}
-                max={maxYear}
-                step={1}
-                minStepsBetweenThumbs={1}
-                style={{ 
-                  width: "100%",
-                  "--slider-track": "#500000",
-                  "--slider-range": "#500000",
-                  "--slider-thumb": "#500000"
-                } as React.CSSProperties}
-              />
+              <Box className="custom-slider">
+                <Slider
+                  value={selectedDateRange}
+                  onValueChange={handleDateRangeChange}
+                  min={minYear}
+                  max={maxYear}
+                  step={1}
+                  minStepsBetweenThumbs={1}
+                  style={{ width: "100%" }}
+                />
+              </Box>
               <Flex justify="between">
                 <Text size="1" color="gray">{minYear}</Text>
                 <Text size="1" color="gray">{maxYear}</Text>
