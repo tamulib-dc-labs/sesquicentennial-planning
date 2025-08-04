@@ -2,7 +2,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-import { Box, Flex, Select } from "@radix-ui/themes";
+import { Box, Flex, Select, Slider, Text } from "@radix-ui/themes";
 import {
   FeatureGroup,
   LayersControl,
@@ -12,7 +12,7 @@ import {
   TileLayer,
 } from "react-leaflet";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 
 import { IconButton } from "@radix-ui/themes";
 import Leaflet from "leaflet";
@@ -46,6 +46,34 @@ interface MapVars {
 // @ts-ignore
 const MAP_VARS: MapVars = process.env.CANOPY_CONFIG.map;
 
+// Helper function to parse dates from navDate
+const parseNavDate = (navDate: any): Date | null => {
+  if (!navDate) return null;
+  
+  // Handle different navDate formats
+  if (typeof navDate === 'string') {
+    const parsed = new Date(navDate);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  
+  if (Array.isArray(navDate) && navDate.length > 0) {
+    const parsed = new Date(navDate[0]);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  
+  if (typeof navDate === 'object' && navDate.value) {
+    const parsed = new Date(navDate.value);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  
+  return null;
+};
+
+// Helper function to format date for display
+const formatDate = (date: Date): string => {
+  return date.getFullYear().toString();
+};
+
 const Map: React.FC<MapProps> = ({ manifests }) => {
   const [tileLayer, setTileLayer] = useState<NamedTileLayer>(
     MAP_VARS.tileLayers[0]
@@ -56,10 +84,55 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
   const [bounds, setBounds] =
     useState<Leaflet.LatLngBoundsExpression>(defaultBounds);
 
-  useEffect(() => {
-    const manifestBounds = getBounds(manifests);
-    manifestBounds.length > 0 && setBounds(manifestBounds);
+  // Date range state
+  const [dateRange, setDateRange] = useState<[number, number]>([0, 0]);
+  const [selectedDateRange, setSelectedDateRange] = useState<[number, number]>([0, 0]);
+
+  // Calculate date range from manifests
+  const { minYear, maxYear, manifestsWithDates } = useMemo(() => {
+    const manifestsWithValidDates = manifests
+      .map((item: any) => ({
+        ...item,
+        parsedDate: parseNavDate(item.navDate)
+      }))
+      .filter((item: any) => item.parsedDate !== null);
+
+    if (manifestsWithValidDates.length === 0) {
+      return { minYear: new Date().getFullYear(), maxYear: new Date().getFullYear(), manifestsWithDates: manifests };
+    }
+
+    const years = manifestsWithValidDates.map((item: any) => item.parsedDate.getFullYear());
+    const minYear = Math.min(...years);
+    const maxYear = Math.max(...years);
+
+    return { minYear, maxYear, manifestsWithDates: manifestsWithValidDates };
   }, [manifests]);
+
+  // Initialize date range
+  useEffect(() => {
+    setDateRange([minYear, maxYear]);
+    setSelectedDateRange([minYear, maxYear]);
+  }, [minYear, maxYear]);
+
+  // Filter manifests based on selected date range
+  const filteredManifests = useMemo(() => {
+    // Always start with original manifests to preserve structure
+    return manifests.filter((item: any) => {
+      const parsedDate = parseNavDate(item.navDate);
+      
+      // If no valid date, include the item
+      if (!parsedDate) return true;
+      
+      // Filter based on date range
+      const year = parsedDate.getFullYear();
+      return year >= selectedDateRange[0] && year <= selectedDateRange[1];
+    });
+  }, [manifests, selectedDateRange]);
+
+  useEffect(() => {
+    const manifestBounds = getBounds(filteredManifests);
+    manifestBounds.length > 0 && setBounds(manifestBounds);
+  }, [filteredManifests]);
 
   useEffect(() => {
     if (mapRef.current && bounds) {
@@ -74,6 +147,10 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
     if (newTileLayer) {
       setTileLayer(newTileLayer);
     }
+  };
+
+  const handleDateRangeChange = (value: number[]) => {
+    setSelectedDateRange([value[0], value[1]]);
   };
 
   const styleContent = `
@@ -99,7 +176,6 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
       background-color: var(--accent-a10);
       opacity: 0.2;
     }
-
 
     .leaflet-control {
       background-color: var(--accent-10);
@@ -175,7 +251,7 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                 aria-label="zoom in"
                 size="3"
                 onClick={() => mapRef.current?.zoomIn()}
-                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer", backgroundColor: "#500000" }}
+                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer" }}
               >
                 <PlusIcon />
               </IconButton>
@@ -183,13 +259,57 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                 aria-label="zoom out"
                 size="3"
                 onClick={() => mapRef.current?.zoomOut()}
-                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer", backgroundColor: "#500000" }}
+                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer"}}
               >
                 <MinusIcon />
               </IconButton>
             </Flex>
           </Flex>
         </Box>
+
+        {/* Date Slider Control */}
+        {manifestsWithDates.length > 0 && minYear !== maxYear && (
+          <Box
+            style={{
+              position: "absolute",
+              zIndex: 1000,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: "var(--space-5)",
+              background: "var(--gray-1)",
+              borderTop: "1px solid var(--gray-6)",
+              boxShadow: "var(--shadow-3)",
+            }}
+          >
+            <Flex direction="column" gap="3">
+              <Flex justify="between" align="center">
+                <Text size="2" weight="medium">
+                  Date Range: {selectedDateRange[0]} - {selectedDateRange[1]}
+                </Text>
+                <Text size="1" color="gray">
+                  {filteredManifests.length} of {manifests.length} items
+                </Text>
+              </Flex>
+              <Box className="custom-slider">
+                <Slider
+                  value={selectedDateRange}
+                  onValueChange={handleDateRangeChange}
+                  min={minYear}
+                  max={maxYear}
+                  step={1}
+                  minStepsBetweenThumbs={1}
+                  style={{ width: "100%" }}
+                />
+              </Box>
+              <Flex justify="between">
+                <Text size="1" color="gray">{minYear}</Text>
+                <Text size="1" color="gray">{maxYear}</Text>
+              </Flex>
+            </Flex>
+          </Box>
+        )}
+
         <LayersControl position="bottomright">
           <LayersControl.BaseLayer name={tileLayer.name} checked>
             <TileLayer
@@ -198,9 +318,9 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
             />
           </LayersControl.BaseLayer>
         </LayersControl>
-        <MarkerClusterGroup>
+        <MarkerClusterGroup key={`cluster-${filteredManifests.length}-${selectedDateRange[0]}-${selectedDateRange[1]}`}>
           <FeatureGroup>
-            {manifests.map((item: any) =>
+            {filteredManifests.map((item: any) =>
               item.features.map((feature: any, index: any) => (
                 <Marker
                   position={[
@@ -208,7 +328,7 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                     feature.geometry.coordinates[0],
                   ]}
                   icon={MarkerIcon(item.thumbnail[0].id, getLabel(feature?.properties?.label))}
-                  key={index}
+                  key={`${item.id}-${index}-${selectedDateRange[0]}-${selectedDateRange[1]}`}
                 >
                   <Popup className="canopy-map-popup">
                     <MDXCard iiifContent={item.id} label={getLabel(feature?.properties?.label) as string | undefined} />
