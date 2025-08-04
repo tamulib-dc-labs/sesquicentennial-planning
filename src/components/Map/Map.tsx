@@ -251,7 +251,7 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                 aria-label="zoom in"
                 size="3"
                 onClick={() => mapRef.current?.zoomIn()}
-                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer", backgroundColor: "#500000" }}
+                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer" }}
               >
                 <PlusIcon />
               </IconButton>
@@ -259,7 +259,7 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                 aria-label="zoom out"
                 size="3"
                 onClick={() => mapRef.current?.zoomOut()}
-                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer", backgroundColor: "#500000" }}
+                style={{ boxShadow: "var(--shadow-3)", cursor: "pointer"}}
               >
                 <MinusIcon />
               </IconButton>
