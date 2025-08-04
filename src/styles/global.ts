@@ -62,6 +62,8 @@ const defaults = {
       '--red-a10': 'rgba(72, 0, 0, 1)',
       '--red-a11': 'rgba(64, 0, 0, 1)',
       '--red-a12': 'rgba(45, 0, 0, 1)',
+
+      '--red-track': '#500000',
   }
 };
 
