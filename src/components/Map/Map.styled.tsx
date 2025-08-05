@@ -75,6 +75,10 @@ const MapStyled = styled("div", {
     fill: "var(--gray-12)",
   },
 
+  ".canopy-marker-image": {
+      border: "2px solid #000",
+  },
+
   ".canopyMapPopup": {
     width: "240px",
     img: {
