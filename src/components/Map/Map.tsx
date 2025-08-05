@@ -145,6 +145,30 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
     setSelectedDateRange([value[0], value[1]]);
   };
 
+  // Code to Handle the Popup to Ensure it's centered
+  const handlePopupOpen = (e: any) => {
+    const popup = e.popup;
+    const map = mapRef.current;
+    
+    if (!map || !popup) return;
+    
+    // Force popup to recalculate position after content loads
+    setTimeout(() => {
+      popup.update();
+      // Trigger auto-pan after popup dimensions are known
+      if (popup.isOpen()) {
+        const popupLatLng = popup.getLatLng();
+        map.panTo(popupLatLng, { animate: true });
+      }
+    }, 50);
+    
+    setTimeout(() => {
+      if (popup.isOpen()) {
+        popup.update();
+      }
+    }, 200);
+  };
+
   return (
     <MapStyled
       css={{ top: headerHeight, height: `calc(100vh - ${headerHeight}px)` }}
@@ -273,9 +297,22 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                   ]}
                   icon={MarkerIcon(item.thumbnail[0].id, getLabel(feature?.properties?.label))}
                   key={`${item.id}-${index}-${selectedDateRange[0]}-${selectedDateRange[1]}`}
+                  eventHandlers={{
+                    popupopen: handlePopupOpen
+                  }}
                 >
-                  <Popup className="canopy-map-popup">
-                    <MDXCard iiifContent={item.id} label={getLabel(feature?.properties?.label) as string | undefined} />
+                  <Popup 
+                    className="canopy-map-popup"
+                    autoPan={true}
+                    autoPanPadding={[20, 20]}
+                    autoPanPaddingTopLeft={[20, 20]}
+                    autoPanPaddingBottomRight={[20, 20]}
+                    keepInView={true}
+                  >
+                    <MDXCard 
+                      iiifContent={item.id} 
+                      label={getLabel(feature?.properties?.label) as string | undefined} 
+                    />
                   </Popup>
                 </Marker>
               ))
