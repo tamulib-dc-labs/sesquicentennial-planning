@@ -145,58 +145,10 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
     setSelectedDateRange([value[0], value[1]]);
   };
 
-  const styleContent = `
-    .leaflet-popup {
-      width: 240px;
-    }
-    
-    .leaflet-popup-content-wrapper {
-      background-color: var(--gray-2);
-      overflow: hidden;
-      border: none;
-    }
-
-    .leaflet-popup-content {
-      margin: 0;
-
-      img {
-        max-height: 100% !important;
-      }
-    }
-
-    .leaflet-popup-tip {
-      background-color: var(--accent-a10);
-      opacity: 0.2;
-    }
-
-    .leaflet-control {
-      background-color: var(--accent-10);
-    }
-
-    .leaflet-bar a {
-      background-color: var(--accent-10);
-      color: var(--gray-12);
-      fill: var(--gray-12);
-    }
-
-    .leaflet-control-layers {
-      display: none;
-    }
-
-    html {
-      overflow: hidden;
-    }
-
-    html.dark .leaflet-layer { 
-      filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(90%);
-    }
-  `;
-
   return (
     <MapStyled
       css={{ top: headerHeight, height: `calc(100vh - ${headerHeight}px)` }}
     >
-      <style dangerouslySetInnerHTML={{ __html: styleContent }} />
       <MapContainer
         className={"map-container"}
         bounds={bounds}

@@ -18,7 +18,15 @@ const MapStyled = styled("div", {
     },
   },
 
-    ".leafletPopupContentWrapper": {
+  html: {
+    overflow: "hidden",
+  },
+
+  "html.dark .leaflet-layer": { 
+    filter: "invert(100%) hue-rotate(180deg) brightness(90%) contrast(90%)",
+  },
+
+  ".leafletPopupContentWrapper": {
     backgroundColor: "var(--gray-2)",
   },
 
@@ -28,6 +36,43 @@ const MapStyled = styled("div", {
 
   ".leafletPopupTip": {
     backgroundColor: "var(--accent-a10)",
+  },
+
+  ".leaflet-popup": {
+      width: "240px",
+  },
+
+  ".leaflet-popup-content-wrapper": {
+      backgroundColor: "var(--gray-2)",
+      overflow: "hidden",
+      border: "none",
+  },
+
+  ".leaflet-popup-content": {
+    margin: "0",
+
+      img: {
+        maxHeight: "100% !important",
+      },
+  },
+
+  ".leaflet-popup-tip": {
+    backgroundColor: "var(--accent-a10)",
+    opacity: "0.2",
+  },
+
+  ".leaflet-control": {
+    backgroundColor: "var(--accent-10)",
+  },
+
+  ".leaflet-control-layers": {
+    display: "none",
+  },
+
+  ".leaflet-bar a": {
+    backgroundColor: "var(--accent-10)",
+    color: "var(--gray-12)",
+    fill: "var(--gray-12)",
   },
 
   ".canopyMapPopup": {
