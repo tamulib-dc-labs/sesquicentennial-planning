@@ -69,11 +69,6 @@ const parseNavDate = (navDate: any): Date | null => {
   return null;
 };
 
-// Helper function to format date for display
-const formatDate = (date: Date): string => {
-  return date.getFullYear().toString();
-};
-
 const Map: React.FC<MapProps> = ({ manifests }) => {
   const [tileLayer, setTileLayer] = useState<NamedTileLayer>(
     MAP_VARS.tileLayers[0]
@@ -84,8 +79,6 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
   const [bounds, setBounds] =
     useState<Leaflet.LatLngBoundsExpression>(defaultBounds);
 
-  // Date range state
-  const [dateRange, setDateRange] = useState<[number, number]>([0, 0]);
   const [selectedDateRange, setSelectedDateRange] = useState<[number, number]>([0, 0]);
 
   // Calculate date range from manifests
@@ -108,9 +101,8 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
     return { minYear, maxYear, manifestsWithDates: manifestsWithValidDates };
   }, [manifests]);
 
-  // Initialize date range
+  // Initialize selected date range
   useEffect(() => {
-    setDateRange([minYear, maxYear]);
     setSelectedDateRange([minYear, maxYear]);
   }, [minYear, maxYear]);
 
