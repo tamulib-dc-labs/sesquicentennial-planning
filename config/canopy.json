@@ -13,6 +13,14 @@
     "radius": "small",
     "scaling": "100%"
   },
+  "vendor": {
+    "googleTagManager": {
+      "gtmId": "GTM-TT5RP3Z6"
+    },
+    "googleAnalytics": {
+      "gaId": "G-L1RWHJC0V7"
+    }
+  },
   "map": {
     "enabled": true,
     "defaultBounds": [
@@ -41,4 +49,3 @@
     ]
   }
 }
-
