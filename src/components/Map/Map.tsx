@@ -21,6 +21,7 @@ import { MapStyled } from "@components/Map/Map.styled";
 import MarkerClusterGroup from "@components/Map/MarkerClusterGroup";
 import { MarkerIcon } from "@components/Map/MarkerIcon";
 import { getBounds } from "@lib/iiif/navPlace";
+import { pushToDataLayer } from "@lib/gtm";
 import { headerHeight } from "@src/styles/global";
 
 // Added back to support labels from navPlace
@@ -67,6 +68,19 @@ const parseNavDate = (navDate: any): Date | null => {
   }
   
   return null;
+};
+
+// Code Specifcally Related to GTM Event Tracking -- May Delete?
+const trackMarkerClick = (item: any, feature: any, index: number) => {
+  pushToDataLayer({
+    event: 'marker_click',
+    event_category: 'map_interaction',
+    event_label: getLabel(feature?.properties?.label)?.[0] || item.id,
+    manifest_id: item.id,
+    feature_index: index,
+    latitude: feature.geometry.coordinates[1],
+    longitude: feature.geometry.coordinates[0]
+  });
 };
 
 const Map: React.FC<MapProps> = ({ manifests }) => {
@@ -298,7 +312,11 @@ const Map: React.FC<MapProps> = ({ manifests }) => {
                   icon={MarkerIcon(item.thumbnail[0].id, getLabel(feature?.properties?.label))}
                   key={`${item.id}-${index}-${selectedDateRange[0]}-${selectedDateRange[1]}`}
                   eventHandlers={{
-                    popupopen: handlePopupOpen
+                    popupopen: handlePopupOpen,
+                        click: () => {
+                          console.log('Marker clicked!'); // Debug log
+                          trackMarkerClick(item, feature, index); // Add this line!
+                        }
                   }}
                 >
                   <Popup 
